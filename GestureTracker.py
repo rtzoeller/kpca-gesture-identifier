@@ -2,7 +2,7 @@ from __future__ import division, print_function
 
 import numpy as np
 
-from IntepolateTracker import InterpolateTracker
+from InterpolateTracker import InterpolateTracker
 
 
 def main(points):
