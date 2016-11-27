@@ -11,7 +11,7 @@ HEIGHT = 480
 
 
 class Tracker(object):
-    def __init__(self, callback=None):
+    def __init__(self, callback=None, numSamples=1):
         # Initialize tkinter
         self.root = tk.Tk()
         self.canvas = tk.Canvas(width=WIDTH, height=HEIGHT)
@@ -25,6 +25,7 @@ class Tracker(object):
         else:
             self.callback = callback
 
+        self.numSamples = numSamples
         self.points = None
         self.root.mainloop()
 
@@ -39,7 +40,10 @@ class Tracker(object):
     def up(self, event):
         self.update(event)
         self.process()
-        self.root.destroy()
+        if self.numSamples != -1:
+            self.numSamples -= 1
+            if not self.numSamples:
+                self.root.destroy()
         self.callback(self.points)
         self.points = None
 
