@@ -6,12 +6,11 @@ from Point import Point
 SAMPLES = 26
 
 
-def scale(points):
+def normalize(points):
     # Rescale time to [0.0, 1.0]
-    resampled = []
+    min_time = points[0].t
     max_time = points[-1].t
-    for p in points:
-        resampled.append(Point(p.x, p.y, p.t / max_time))
+    resampled = [Point(p.x, p.y, (p.t - min_time) / (max_time - min_time)) for p in points]
 
     # Interpolate between points
     interpolated = []
@@ -44,8 +43,14 @@ def scale(points):
 
     remapped = []
     for p in interpolated:
-        x = 2 * (p.x - x_mean) / (x_max - x_min)
-        y = 2 * (p.y - y_mean) / (y_max - y_min)
+        if x_max != x_min:
+            x = 2 * (p.x - x_mean) / (x_max - x_min)
+        else:
+            x = x_max
+        if y_max != y_min:
+            y = 2 * (p.y - y_mean) / (y_max - y_min)
+        else:
+            y = y_max
         remapped.append(Point(x, y, p.t))
 
     return remapped

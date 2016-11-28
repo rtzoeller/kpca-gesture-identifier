@@ -1,0 +1,5 @@
+<launch>
+    <node name="MouseTracker" pkg="kpca_gesture_identifier" type="MouseTrackerNode.py" />
+    <node name="TrajectoryNormalizer" pkg="kpca_gesture_identifier" type="TrajectoryNormalizerNode.py" />
+    <node name="Matcher" pkg="kpca_gesture_identifier" type="NormalizedTrajectoryMatcherNode.py" />
+</launch>
