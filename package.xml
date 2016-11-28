@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
     <name>kpca_gesture_identifier</name>
     <version>0.0.0</version>
     <description>The kpca_gesture_identifier package</description>
@@ -12,7 +12,11 @@
 
     <buildtool_depend>catkin</buildtool_depend>
     <build_depend>message_generation</build_depend>
-    <run_depend>message_runtime</run_depend>
+    <build_export_depend>message_runtime</build_export_depend>
+    <exec_depend>message_runtime</exec_depend>
+    <exec_depend>rospy</exec_depend>
+    <depend>geometry_msgs</depend>
+    <depend>std_msgs</depend>
 
     <export>
     </export>
