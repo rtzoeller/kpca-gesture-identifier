@@ -93,6 +93,8 @@ if __name__ == '__main__':
     for i in range(1, 21):
         predictor.addTrajectory(np.load("data/L/{0}.npy".format(i)), "L")
     for i in range(1, 21):
+        predictor.addTrajectory(np.load("data/N/{0}.npy".format(i)), "N")
+    for i in range(1, 21):
         predictor.addTrajectory(np.load("data/O/{0}.npy".format(i)), "O")
     for i in range(1, 21):
         predictor.addTrajectory(np.load("data/R/{0}.npy".format(i)), "R")
@@ -113,7 +115,7 @@ if __name__ == '__main__':
     fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
     ax.scatter(predictor.kpca.eigvecs[:, 0], predictor.kpca.eigvecs[:, 1], predictor.kpca.eigvecs[:, 2],
-               c=map(lambda l: {"L": "r", "O": "b", "R": "k", "S": "g", "W": "c"}[l], predictor.labels),
+               c=map(lambda l: {"L": "r", "N": "m", "O": "b", "R": "k", "S": "g", "W": "c"}[l], predictor.labels),
                marker="o")
     ax.scatter(projection[0], projection[1], projection[2], c="y", marker="^")
     plt.show()
