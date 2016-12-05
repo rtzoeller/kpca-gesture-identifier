@@ -1,4 +1,7 @@
 from __future__ import division, print_function
+
+import numpy as np
+import six
 from six.moves import range
 
 from Point import Point
@@ -6,7 +9,7 @@ from Point import Point
 SAMPLES = 26
 
 
-def normalize(points):
+def linear(points):
     # Rescale time to [0.0, 1.0]
     min_time = points[0].t
     max_time = points[-1].t
@@ -54,3 +57,20 @@ def normalize(points):
         remapped.append(Point(x, y, p.t))
 
     return remapped
+
+
+interpolation_strategies = {
+    "default": linear,
+    "linear": linear,
+}
+
+
+def normalizeNumpyArray(npArray, strategy="default"):
+    if isinstance(strategy, six.string_types):
+        strategy = interpolation_strategies[strategy]
+
+    trajectory = [Point(x, y, t) for x, y, t in npArray]
+    normalizedTrajectory = strategy(trajectory)
+    normalizedNumpyTrajectory = np.array(
+        [[p.x for p in normalizedTrajectory], [p.y for p in normalizedTrajectory]]).T
+    return normalizedNumpyTrajectory

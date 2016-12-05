@@ -11,6 +11,10 @@ from sklearn import neighbors
 
 from math import exp
 
+from Point import Point
+
+from Interpolater import normalizeNumpyArray, interpolation_strategies
+
 
 class KPCA(object):
     def __init__(self, trajectories, n_components, gamma):
@@ -91,21 +95,23 @@ if __name__ == '__main__':
     # Read in saved trajectories
     predictor = Predictor()
     for i in range(1, 21):
-        predictor.addTrajectory(np.load("data/L/{0}.npy".format(i)), "L")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/L/{0}.npy".format(i)), "default"), "L")
     for i in range(1, 21):
-        predictor.addTrajectory(np.load("data/N/{0}.npy".format(i)), "N")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/N/{0}.npy".format(i)), "default"), "N")
     for i in range(1, 21):
-        predictor.addTrajectory(np.load("data/O/{0}.npy".format(i)), "O")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/O/{0}.npy".format(i)), "default"), "O")
     for i in range(1, 21):
-        predictor.addTrajectory(np.load("data/R/{0}.npy".format(i)), "R")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/R/{0}.npy".format(i)), "default"), "R")
     for i in range(1, 21):
-        predictor.addTrajectory(np.load("data/S/{0}.npy".format(i)), "S")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/S/{0}.npy".format(i)), "default"), "S")
     for i in range(1, 21):
-        predictor.addTrajectory(np.load("data/W/{0}.npy".format(i)), "W")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/W/{0}.npy".format(i)), "default"), "W")
 
     # Guess a new point
-    test = np.load("out.npy")
-    prediction, projection = predictor.classify(test)
+    trajectory = [Point(x, y, t) for x, y, t in np.load("out.npy")]
+    normalizedTrajectory = interpolation_strategies["default"](trajectory)
+    normalizedNumpyTrajectory = np.array([[p.x for p in normalizedTrajectory], [p.y for p in normalizedTrajectory]]).T
+    prediction, projection = predictor.classify(normalizedNumpyTrajectory)
     print(prediction)
 
     # Show plots

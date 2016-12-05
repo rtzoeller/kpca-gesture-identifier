@@ -3,11 +3,12 @@ from __future__ import division, print_function
 
 import rospy
 from geometry_msgs.msg import PointStamped
-from kpca_gesture_identifier.Interpolater import normalize
+from kpca_gesture_identifier.Interpolater import interpolation_strategies
 from kpca_gesture_identifier.Point import Point as kpcaPoint
 from kpca_gesture_identifier.msg import Trajectory
 
 publisher = rospy.Publisher("trajectory_normalized", Trajectory, queue_size=5)
+interpolation_strategy = rospy.get_param("interpolation_strategy")
 
 
 def callback(trajectory):
@@ -15,7 +16,7 @@ def callback(trajectory):
     points = [kpcaPoint(stampedPoint.point.x, stampedPoint.point.y, stampedPoint.header.stamp.to_sec())
               for stampedPoint in trajectory.points]
 
-    pointsNormalized = normalize(points)
+    pointsNormalized = interpolation_strategies[interpolation_strategy](points)
 
     # Convert to the point representation used by ROS
     trajectoryNormalized = Trajectory()

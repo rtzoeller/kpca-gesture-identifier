@@ -5,7 +5,7 @@ import rospy
 import numpy as np
 import os
 from std_msgs.msg import String
-from kpca_gesture_identifier.KPCA import Predictor
+from kpca_gesture_identifier.KPCA import Predictor, normalizeNumpyArray
 from kpca_gesture_identifier.Point import Point
 from kpca_gesture_identifier.msg import Trajectory
 
@@ -23,7 +23,8 @@ for gesture in gestures:
     for directory, subdirectories, filePaths in os.walk(os.path.join(path, gestures[gesture])):
         for filePath in filePaths:
             fullPath = os.path.join(directory, filePath)
-            predictor.addTrajectory(np.load(fullPath), gesture)
+            normalizedTrajectory = normalizeNumpyArray(np.load(fullPath))
+            predictor.addTrajectory(normalizedTrajectory, gesture)
             count += 1
 rospy.logdebug("{0} samples loaded".format(count))
 
