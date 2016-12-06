@@ -3,6 +3,6 @@
     <node name="TrajectoryNormalizer" pkg="kpca_gesture_identifier" type="TrajectoryNormalizerNode.py" />
     <node name="Matcher" pkg="kpca_gesture_identifier" type="NormalizedTrajectoryMatcherNode.py" output="screen" />
 
-    <param name="interpolation_strategy" value="linear" />
+    <param name="interpolation_strategy" value="default" />
     <rosparam command="load" file="$(find kpca_gesture_identifier)/data/gestures.yaml" />
 </launch>

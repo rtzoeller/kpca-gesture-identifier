@@ -93,24 +93,23 @@ class Predictor(object):
 
 if __name__ == '__main__':
     # Read in saved trajectories
+    strategy = "linear_time_invariant"
     predictor = Predictor()
     for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/L/{0}.npy".format(i)), "default"), "L")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/L/{0}.npy".format(i)), strategy), "L")
     for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/N/{0}.npy".format(i)), "default"), "N")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/N/{0}.npy".format(i)), strategy), "N")
     for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/O/{0}.npy".format(i)), "default"), "O")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/O/{0}.npy".format(i)), strategy), "O")
     for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/R/{0}.npy".format(i)), "default"), "R")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/R/{0}.npy".format(i)), strategy), "R")
     for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/S/{0}.npy".format(i)), "default"), "S")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/S/{0}.npy".format(i)), strategy), "S")
     for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/W/{0}.npy".format(i)), "default"), "W")
+        predictor.addTrajectory(normalizeNumpyArray(np.load("data/W/{0}.npy".format(i)), strategy), "W")
 
     # Guess a new point
-    trajectory = [Point(x, y, t) for x, y, t in np.load("out.npy")]
-    normalizedTrajectory = interpolation_strategies["default"](trajectory)
-    normalizedNumpyTrajectory = np.array([[p.x for p in normalizedTrajectory], [p.y for p in normalizedTrajectory]]).T
+    normalizedNumpyTrajectory = normalizeNumpyArray(np.load("out.npy"), strategy)
     prediction, projection = predictor.classify(normalizedNumpyTrajectory)
     print(prediction)
 
