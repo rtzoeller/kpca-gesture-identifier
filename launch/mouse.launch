@@ -1,9 +1,9 @@
 <launch>
-    <node name="MouseTracker" pkg="kpca_gesture_identifier" type="MouseTrackerNode.py" />
-    <node name="TrajectoryNormalizer" pkg="kpca_gesture_identifier" type="TrajectoryNormalizerNode.py" />
-    <node name="Matcher" pkg="kpca_gesture_identifier" type="NormalizedTrajectoryMatcherNode.py" output="screen" />
+    <node name="MouseTracker" pkg="kpca_gesture_identifier" type="MouseTrackerNode" />
+    <node name="TrajectoryNormalizer" pkg="kpca_gesture_identifier" type="TrajectoryNormalizerNode" />
+    <node name="Matcher" pkg="kpca_gesture_identifier" type="NormalizedTrajectoryMatcherNode" output="screen" />
 
-    <!-- <node name="Saver" pkg="kpca_gesture_identifier" type="TrajectorySaverNode.py" output="screen" /> -->
+    <!-- <node name="Saver" pkg="kpca_gesture_identifier" type="TrajectorySaverNode" output="screen" /> -->
 
     <param name="interpolation_strategy" value="default" />
     <rosparam command="load" file="$(find kpca_gesture_identifier)/data/gestures.yaml" />

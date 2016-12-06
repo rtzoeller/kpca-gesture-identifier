@@ -17,6 +17,11 @@ def callback(trajectory):
     try:
         os.mkdir(os.path.join(path, "saved"), 0o755)
     except OSError:
+        # No easy way to check if directory exists, and create it if not.
+        # Naive way has a big race condition - better to just create it and
+        # handle the failure, although we do bury some possible failures here
+        # such as insufficient permissions. These errors will likely occur again
+        # when we try to write the file, which is fine.
         pass
     np.save(os.path.join(path, "saved", str(int((time.time() + 0.5) * 1000)) + ".npy"),
             np.array([[p.point.x for p in points], [p.point.y for p in points],
