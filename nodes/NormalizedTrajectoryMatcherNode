@@ -31,8 +31,8 @@ rospy.logdebug("{0} samples loaded".format(count))
 
 def callback(trajectory):
     # Convert to the point representation used by the KPCA algorithm
-    points = [Point(stampedPoint.point.x, stampedPoint.point.y, stampedPoint.header.stamp.to_sec())
-              for stampedPoint in trajectory.points]
+    points = [Point(point.x, point.y)
+              for point in trajectory.points]
 
     # Guess a new point
     A = np.array([[p.x for p in points], [p.y for p in points]]).T

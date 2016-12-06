@@ -1,1 +1,1 @@
-geometry_msgs/PointStamped[] points
+geometry_msgs/Point[] points

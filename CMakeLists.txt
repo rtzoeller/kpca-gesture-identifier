@@ -48,6 +48,7 @@ catkin_python_setup()
 add_message_files(DIRECTORY msg
     FILES
     Trajectory.msg
+    TrajectoryStamped.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -150,7 +151,10 @@ catkin_package(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-    nodes/MouseTrackerNode.py
+    nodes/MouseTrackerNode
+    nodes/NormalizedTrajectoryMatcherNode
+    nodes/TrajectoryNormalizerNode
+    nodes/TrajectorySaverNode
     DESTINATION ${CATKIN_PACKAGE_PYTHON_DESTINATION}
 )
 

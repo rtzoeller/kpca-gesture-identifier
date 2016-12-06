@@ -2,34 +2,33 @@
 from __future__ import division, print_function
 
 import rospy
-from geometry_msgs.msg import PointStamped
+from geometry_msgs.msg import Point
 from kpca_gesture_identifier.Interpolater import interpolation_strategies
 from kpca_gesture_identifier.Point import Point as kpcaPoint
-from kpca_gesture_identifier.msg import Trajectory
+from kpca_gesture_identifier.msg import Trajectory, TrajectoryStamped
 
 publisher = rospy.Publisher("trajectory_normalized", Trajectory, queue_size=5)
 interpolation_strategy = rospy.get_param("interpolation_strategy")
 
 
-def callback(trajectory):
+def callback(trajectoryStamped):
     # Convert to the point representation used by the KPCA algorithm
     points = [kpcaPoint(stampedPoint.point.x, stampedPoint.point.y, stampedPoint.header.stamp.to_sec())
-              for stampedPoint in trajectory.points]
+              for stampedPoint in trajectoryStamped.points]
 
     pointsNormalized = interpolation_strategies[interpolation_strategy](points)
 
     # Convert to the point representation used by ROS
     trajectoryNormalized = Trajectory()
     for p in pointsNormalized:
-        pointStamped = PointStamped()
-        pointStamped.header.stamp = rospy.Time.from_sec(p.t)
-        pointStamped.point.x = p.x
-        pointStamped.point.y = p.y
-        trajectoryNormalized.points.append(pointStamped)
+        point = Point()
+        point.x = p.x
+        point.y = p.y
+        trajectoryNormalized.points.append(point)
     publisher.publish(trajectoryNormalized)
 
 
-subscriber = rospy.Subscriber("trajectory", Trajectory, callback)
+subscriber = rospy.Subscriber("trajectory", TrajectoryStamped, callback)
 
 if __name__ == '__main__':
     rospy.init_node("TrajectoryNormalizer", anonymous=True)

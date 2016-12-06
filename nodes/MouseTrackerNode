@@ -4,16 +4,16 @@ from __future__ import division, print_function
 import rospy
 from geometry_msgs.msg import PointStamped
 from kpca_gesture_identifier.Tracker import Tracker
-from kpca_gesture_identifier.msg import Trajectory
+from kpca_gesture_identifier.msg import TrajectoryStamped
 
-publisher = rospy.Publisher("trajectory", Trajectory, queue_size=5)
+publisher = rospy.Publisher("trajectory", TrajectoryStamped, queue_size=5)
 
 
 def callback(points):
     if rospy.is_shutdown():
         return
 
-    trajectory = Trajectory()
+    trajectory = TrajectoryStamped()
     baseTime = rospy.Time.now() - rospy.Duration(points[-1].t)
     for p in points:
         pointStamped = PointStamped()

@@ -6,14 +6,14 @@ import rospkg
 import rospy
 import time
 import os
-from kpca_gesture_identifier.msg import Trajectory
+from kpca_gesture_identifier.msg import TrajectoryStamped
 
 rp = rospkg.RosPack()
 path = rp.get_path("kpca_gesture_identifier")
 
 
-def callback(trajectory):
-    points = trajectory.points
+def callback(trajectoryStamped):
+    points = trajectoryStamped.points
     try:
         os.mkdir(os.path.join(path, "saved"), 0o755)
     except OSError:
@@ -28,7 +28,7 @@ def callback(trajectory):
                       [p.header.stamp.to_sec() for p in points]]).T)
 
 
-subscriber = rospy.Subscriber("trajectory", Trajectory, callback)
+subscriber = rospy.Subscriber("trajectory", TrajectoryStamped, callback)
 
 if __name__ == '__main__':
     rospy.init_node("TrajectorySaver", anonymous=True)
