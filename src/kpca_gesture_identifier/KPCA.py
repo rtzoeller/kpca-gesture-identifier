@@ -92,21 +92,19 @@ class Predictor(object):
 
 
 if __name__ == '__main__':
+    import os
+
     # Read in saved trajectories
     strategy = "linear_time_invariant"
     predictor = Predictor()
-    for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/L/{0}.npy".format(i)), strategy), "L")
-    for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/N/{0}.npy".format(i)), strategy), "N")
-    for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/O/{0}.npy".format(i)), strategy), "O")
-    for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/R/{0}.npy".format(i)), strategy), "R")
-    for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/S/{0}.npy".format(i)), strategy), "S")
-    for i in range(1, 21):
-        predictor.addTrajectory(normalizeNumpyArray(np.load("data/W/{0}.npy".format(i)), strategy), "W")
+    path = "."
+    gestures = ["L", "N", "O", "R", "S", "W"]
+    for gesture in gestures:
+        for directory, subdirectories, filePaths in os.walk(os.path.join("data", gesture)):
+            for filePath in filePaths:
+                fullPath = os.path.join(directory, filePath)
+                normalizedTrajectory = normalizeNumpyArray(np.load(fullPath))
+                predictor.addTrajectory(normalizedTrajectory, gesture)
 
     # Guess a new point
     normalizedNumpyTrajectory = normalizeNumpyArray(np.load("out.npy"), strategy)
