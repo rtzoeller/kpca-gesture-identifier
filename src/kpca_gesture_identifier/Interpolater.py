@@ -10,7 +10,7 @@ from Point import Point
 SAMPLES = 26
 
 
-def linear(points):
+def linear(points, scale_uniform=False):
     # Rescale time to [0.0, 1.0]
     min_time = points[0].t
     max_time = points[-1].t
@@ -46,21 +46,32 @@ def linear(points):
     y_min = min([p.y for p in points])
 
     remapped = []
-    for p in interpolated:
-        if x_max != x_min:
-            x = 2 * (p.x - x_mean) / (x_max - x_min)
-        else:
-            x = x_max
-        if y_max != y_min:
-            y = 2 * (p.y - y_mean) / (y_max - y_min)
-        else:
-            y = y_max
-        remapped.append(Point(x, y, p.t))
+    if scale_uniform:
+        scale = max(x_max - x_min, y_max - y_min)
+        for p in interpolated:
+            if scale != 0:
+                x = 2 * (p.x - x_mean) / scale
+                y = 2 * (p.y - y_mean) / scale
+            else:
+                x = x_max
+                y = y_max
+            remapped.append(Point(x, y, p.t))
+    else:
+        for p in interpolated:
+            if x_max != x_min:
+                x = 2 * (p.x - x_mean) / (x_max - x_min)
+            else:
+                x = x_max
+            if y_max != y_min:
+                y = 2 * (p.y - y_mean) / (y_max - y_min)
+            else:
+                y = y_max
+            remapped.append(Point(x, y, p.t))
 
     return remapped
 
 
-def linear_time_invariant(points):
+def linear_time_invariant(points, scale_uniform=False):
     def distance(x1, y1, x2, y2):
         return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
@@ -112,16 +123,27 @@ def linear_time_invariant(points):
     y_min = min([p.y for p in points])
 
     remapped = []
-    for p in interpolated:
-        if x_max != x_min:
-            x = 2 * (p.x - x_mean) / (x_max - x_min)
-        else:
-            x = x_max
-        if y_max != y_min:
-            y = 2 * (p.y - y_mean) / (y_max - y_min)
-        else:
-            y = y_max
-        remapped.append(Point(x, y, p.t))
+    if scale_uniform:
+        scale = max(x_max - x_min, y_max - y_min)
+        for p in interpolated:
+            if scale != 0:
+                x = 2 * (p.x - x_mean) / scale
+                y = 2 * (p.y - y_mean) / scale
+            else:
+                x = x_max
+                y = y_max
+            remapped.append(Point(x, y, p.t))
+    else:
+        for p in interpolated:
+            if x_max != x_min:
+                x = 2 * (p.x - x_mean) / (x_max - x_min)
+            else:
+                x = x_max
+            if y_max != y_min:
+                y = 2 * (p.y - y_mean) / (y_max - y_min)
+            else:
+                y = y_max
+            remapped.append(Point(x, y, p.t))
 
     return remapped
 
@@ -130,6 +152,8 @@ interpolation_strategies = {
     "default": linear_time_invariant,
     "linear": linear,
     "linear_time_invariant": linear_time_invariant,
+    "linear_scale_uniform": lambda p: linear(p, True),
+    "linear_time_invariant_scale_uniform": lambda p: linear_time_invariant(p, True),
 }
 
 
