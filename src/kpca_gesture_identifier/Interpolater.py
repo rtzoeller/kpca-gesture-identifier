@@ -154,6 +154,7 @@ interpolation_strategies = {
     "linear_time_invariant": linear_time_invariant,
     "linear_scale_uniform": lambda p: linear(p, True),
     "linear_time_invariant_scale_uniform": lambda p: linear_time_invariant(p, True),
+    "none": lambda p: p,
 }
 
 

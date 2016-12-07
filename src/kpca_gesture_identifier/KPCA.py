@@ -103,7 +103,7 @@ if __name__ == '__main__':
         for directory, subdirectories, filePaths in os.walk(os.path.join("data", gesture)):
             for filePath in filePaths:
                 fullPath = os.path.join(directory, filePath)
-                normalizedTrajectory = normalizeNumpyArray(np.load(fullPath))
+                normalizedTrajectory = normalizeNumpyArray(np.load(fullPath), strategy)
                 predictor.addTrajectory(normalizedTrajectory, gesture)
 
     # Guess a new point

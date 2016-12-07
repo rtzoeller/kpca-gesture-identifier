@@ -12,6 +12,7 @@ from kpca_gesture_identifier.msg import Trajectory
 import rospkg
 
 publisher = rospy.Publisher("trajectory_shape", String, queue_size=5)
+interpolation_strategy = rospy.get_param("interpolation_strategy")
 
 # Read in saved trajectories
 rp = rospkg.RosPack()
@@ -23,7 +24,7 @@ for gesture in gestures:
     for directory, subdirectories, filePaths in os.walk(os.path.join(path, gestures[gesture])):
         for filePath in filePaths:
             fullPath = os.path.join(directory, filePath)
-            normalizedTrajectory = normalizeNumpyArray(np.load(fullPath))
+            normalizedTrajectory = normalizeNumpyArray(np.load(fullPath), interpolation_strategy)
             predictor.addTrajectory(normalizedTrajectory, gesture)
             count += 1
 rospy.logdebug("{0} samples loaded".format(count))
