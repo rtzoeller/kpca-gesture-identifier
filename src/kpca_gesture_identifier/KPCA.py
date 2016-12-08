@@ -11,9 +11,7 @@ from sklearn import neighbors
 
 from math import exp
 
-from Point import Point
-
-from Interpolater import normalizeNumpyArray, interpolation_strategies
+from Interpolater import normalizeNumpyArray
 
 
 class KPCA(object):
@@ -99,12 +97,21 @@ if __name__ == '__main__':
     predictor = Predictor()
     path = "."
     gestures = ["L", "N", "O", "R", "S", "W"]
-    for gesture in gestures:
+    counts = [0] * len(gestures)
+    middleCounts = [0] * len(counts)
+    for i, gesture in enumerate(gestures):
         for directory, subdirectories, filePaths in os.walk(os.path.join("data", gesture)):
             for filePath in filePaths:
                 fullPath = os.path.join(directory, filePath)
                 normalizedTrajectory = normalizeNumpyArray(np.load(fullPath), strategy)
                 predictor.addTrajectory(normalizedTrajectory, gesture)
+                counts[i] += 1
+
+    for i in range(len(gestures)):
+        if i == 0:
+            middleCounts[i] = counts[i] / 2
+        else:
+            middleCounts[i] = middleCounts[i - 1] + counts[i - 1]
 
     # Guess a new point
     normalizedNumpyTrajectory = normalizeNumpyArray(np.load("out.npy"), strategy)
@@ -113,6 +120,11 @@ if __name__ == '__main__':
 
     # Show plots
     plt.imshow(predictor.kpca.K, interpolation="nearest")
+    ax = plt.gca()
+    ax.set_xticks(middleCounts)
+    ax.set_xticklabels(gestures)
+    ax.set_yticks(middleCounts)
+    ax.set_yticklabels(gestures)
     plt.colorbar()
 
     fig = plt.figure()
