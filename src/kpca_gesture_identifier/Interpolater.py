@@ -4,6 +4,7 @@ import numpy as np
 import math
 import six
 from six.moves import range
+from scipy.interpolate import CubicSpline
 
 from Point import Point
 
@@ -148,12 +149,69 @@ def linear_time_invariant(points, scale_uniform=False):
     return remapped
 
 
+def cubic_spline(points, scale_uniform=False, bc_type="not-a-knot"):
+    # Rescale time to [0.0, 1.0]
+    min_time = points[0].t
+    max_time = points[-1].t
+    resampled = [Point(p.x, p.y, (p.t - min_time) / (max_time - min_time)) for p in points]
+
+    # Interpolate SAMPLES points using cubic splines
+    t = np.linspace(0, 1, len(resampled))
+    xSpline = CubicSpline(t, [p.x for p in resampled], bc_type=bc_type)
+    ySpline = CubicSpline(t, [p.y for p in resampled], bc_type=bc_type)
+
+    interpolated = []
+    for i in range(0, SAMPLES):
+        effective_time = i / (SAMPLES - 1)
+        interpolated.append(Point(xSpline(effective_time), ySpline(effective_time), effective_time))
+
+    # Remap points physically
+    x_mean = 0
+    y_mean = 0
+    for p in interpolated:
+        x_mean += p.x
+        y_mean += p.y
+    x_mean /= len(interpolated)
+    y_mean /= len(interpolated)
+    x_max = max([p.x for p in points])
+    y_max = max([p.y for p in points])
+    x_min = min([p.x for p in points])
+    y_min = min([p.y for p in points])
+
+    remapped = []
+    if scale_uniform:
+        scale = max(x_max - x_min, y_max - y_min)
+        for p in interpolated:
+            if scale != 0:
+                x = 2 * (p.x - x_mean) / scale
+                y = 2 * (p.y - y_mean) / scale
+            else:
+                x = x_max
+                y = y_max
+            remapped.append(Point(x, y, p.t))
+    else:
+        for p in interpolated:
+            if x_max != x_min:
+                x = 2 * (p.x - x_mean) / (x_max - x_min)
+            else:
+                x = x_max
+            if y_max != y_min:
+                y = 2 * (p.y - y_mean) / (y_max - y_min)
+            else:
+                y = y_max
+            remapped.append(Point(x, y, p.t))
+
+    return remapped
+
+
 interpolation_strategies = {
     "default": linear_time_invariant,
     "linear": linear,
     "linear_time_invariant": linear_time_invariant,
     "linear_scale_uniform": lambda p: linear(p, True),
     "linear_time_invariant_scale_uniform": lambda p: linear_time_invariant(p, True),
+    "cubic_spline": cubic_spline,
+    "cubic_spline_scale_uniform": lambda p: cubic_spline(p, True),
     "none": lambda p: p,
 }
 
