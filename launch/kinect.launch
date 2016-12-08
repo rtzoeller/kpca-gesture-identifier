@@ -1,5 +1,5 @@
 <launch>
-    <node name="MouseTracker" pkg="kpca_gesture_identifier" type="MouseTrackerNode" required="true" />
+    <node name="BlobTracker" pkg="kpca_gesture_identifier" type="BlobTrackerNode" required="true" />
     <node name="TrajectoryNormalizer" pkg="kpca_gesture_identifier" type="TrajectoryNormalizerNode" />
     <node name="Matcher" pkg="kpca_gesture_identifier" type="NormalizedTrajectoryMatcherNode" output="screen" />
 
