@@ -2,3 +2,7 @@
 .idea/
 *.swp
 out.npy
+*.aux
+*.log
+*.bbl
+*.blg
