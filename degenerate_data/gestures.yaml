@@ -1,0 +1,11 @@
+gestures:
+  N: "data/N/"
+  NE: "data/NE/"
+  E: "data/E/"
+  SE: "data/SE/"
+  S: "data/S/"
+  SW: "data/SW/"
+  W: "data/W/"
+  NW: "data/NW/"
+
+
