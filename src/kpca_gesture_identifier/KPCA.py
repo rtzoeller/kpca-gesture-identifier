@@ -96,11 +96,11 @@ if __name__ == '__main__':
     strategy = "linear_time_invariant"
     predictor = Predictor()
     path = "."
-    gestures = ["L", "N", "O", "R", "S", "W"]
+    gestures = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
     counts = [0] * len(gestures)
     middleCounts = [0] * len(counts)
     for i, gesture in enumerate(gestures):
-        for directory, subdirectories, filePaths in os.walk(os.path.join("data", gesture)):
+        for directory, subdirectories, filePaths in os.walk(os.path.join("degenerate_data", gesture)):
             for filePath in filePaths:
                 fullPath = os.path.join(directory, filePath)
                 normalizedTrajectory = normalizeNumpyArray(np.load(fullPath), strategy)
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
     ax.scatter(predictor.kpca.eigvecs[:, 0], predictor.kpca.eigvecs[:, 1], predictor.kpca.eigvecs[:, 2],
-               c=map(lambda l: {"L": "r", "N": "m", "O": "b", "R": "k", "S": "g", "W": "c"}[l], predictor.labels),
+            c=map(lambda l: {"N": "r", "NE": "m", "E": "b", "SE": "k", "S": "g", "SW": "c", "W": "y", "NW": "orange"}[l], predictor.labels),
                marker="o")
     ax.scatter(projection[0], projection[1], projection[2], c="y", marker="^")
     plt.show()

@@ -6,18 +6,17 @@ import numpy as np
 from kpca_gesture_identifier.Interpolater import normalizeNumpyArray
 from kpca_gesture_identifier.KPCA import Predictor
 
-numBuckets = 10
+numBuckets = 2
 
 strategy = "default"
 labels = []
 paths = []
 path = "."
-gestures = ["L", "N", "O", "R", "S", "W"]
+gestures = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
 count = 0
 for gesture in gestures:
     label = gesture
-    gesture = os.path.join(gesture, "Mouse")
-    for directory, subdirectories, filePaths in os.walk(os.path.join("data", gesture)):
+    for directory, subdirectories, filePaths in os.walk(os.path.join("degenerate_data", gesture)):
         for filePath in filePaths:
             fullPath = os.path.join(directory, filePath)
             labels.append(label)
@@ -33,19 +32,20 @@ buckets = np.array_split(buckets, numBuckets)
 
 for i in range(len(buckets)):
     predictor = Predictor()
-    for j in range(len(buckets)):
-        if i == j:
-            # The ith bucket is not included in training
-            continue
-
-        for path, label in buckets[j]:
-            normalizedTrajectory = normalizeNumpyArray(np.load(path), strategy)
-            predictor.addTrajectory(normalizedTrajectory, label)
-
     for path, label in buckets[i]:
         normalizedTrajectory = normalizeNumpyArray(np.load(path), strategy)
-        prediction, projected = predictor.classify(normalizedTrajectory)
-        if prediction != label:
-            print("Expected {0}, got {1}".format(label, prediction))
+        predictor.addTrajectory(normalizedTrajectory, label)
 
-    print("Finished " + str(i))
+    failures = 0
+    for j in range(len(buckets)):
+        if i == j:
+            continue
+
+        for path, label in buckets[i]:
+            normalizedTrajectory = normalizeNumpyArray(np.load(path), strategy)
+            prediction, projected = predictor.classify(normalizedTrajectory)
+            if prediction != label:
+                print("Expected {0}, got {1}".format(label, prediction))
+                failures += 1
+
+    print("Finished bucket {0}, {1} failures ".format(i, failures))
