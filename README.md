@@ -10,7 +10,14 @@ neighbors algorithm to perform classification on this space.
 ## Usage
 
 The package is comprised of a number of generic source files that do not
-depend on ROS, located in `src/`. ROS nodes live in `nodes/`.
+depend on ROS, located in `src/`. ROS nodes live in `nodes/`. Several
+launch files exist in `launch/` &mdash; these can be used directly to
+interface with the training data, or modified to use a different data
+set.
+
+It may be useful to run the command `rostopic echo /trajectory_shape`
+for debugging purposes &mdash; this is the topic that the matched
+gesture will be published on.
 
 Support is included for recognizing mouse movement with in a dedicated
 window, although this serves primarily as a demo. It is likely desirable
@@ -20,6 +27,7 @@ to replace this front end with a custom one suited for your application.
 | --- | --- |
 | MouseTrackerNode | TrajectoryNormalizerNode |
 | TrajectorySaverNode | NormalizedTrajectoryMatcherNode |
+| BlobTrackerNode |  |
 
 As part of matching trajectories, both the training data as well as the
 test data must be normalized. Built in normalization methods include:
@@ -29,8 +37,10 @@ test data must be normalized. Built in normalization methods include:
 | `default` | Alias for `linear_time_invariant`, may change. |
 | `linear` | Points are resampled uniformly by time &mdash; linear interpolation is used between points. Each axis of the input data is scaled independently. |
 | `linear_time_invariant` | Points are resampled uniformly by distance &mdash; linear interpolation is used between points. Each axis of the input data is scaled independently. |
+| `cubic_spline` | Points are resampled uniformly by time &mdash; cubic splines are used to interpolate between points. Each axis of the input_data is scaled independently. |
 | `linear_scale_uniform` | Like `linear`, except axes are not scaled independently. |
 | `linear_time_invariant_scale_uniform` | Like `linear_time_invariant`, except axes are not scaled independently. |
+| `cubic_spline_scale_uniform` | Like `cubic_spline`, except axes are not scaled independently. |
 | `none` | Indicates you will handle interpolation yourself. See below. |
 
 If a built in normalization method is sufficient, launching a

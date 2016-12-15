@@ -20,6 +20,10 @@ class KPCA(object):
         self.n_components = n_components
         self.gamma = gamma
         self.computeKPCA()
+        # Call computeKPCA() to populate these values
+        self.eigvecs = None
+        self.eigvals = None
+        self.K = None
 
     @staticmethod
     def RBF(x1, x2, gamma):
@@ -31,6 +35,11 @@ class KPCA(object):
         return (KPCA.RBF(t1[:, 0], t2[:, 0], gamma) + KPCA.RBF(t1[:, 1], t2[:, 1], gamma)) / 2
 
     def computeKPCA(self):
+        """
+        Makes use of an algorithm listed by Sebastian Raschka
+        (http://sebastianraschka.com/Articles/2014_kernel_pca.html), modified to use the multiple kernel representation
+        proposed by Ramirez-Giraldo et al.
+        """
         K = np.empty((len(self.trajectories), len(self.trajectories)))
         for i in range(len(self.trajectories)):
             for j in range(len(self.trajectories)):
